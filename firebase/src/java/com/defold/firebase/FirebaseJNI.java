@@ -36,14 +36,40 @@ public class FirebaseJNI {
     }
 
     public void initialize() {
-        if (optionsBuilder != null) {
-            FirebaseApp.initializeApp(activity.getApplicationContext(), optionsBuilder.build());
-            optionsBuilder = null;
+        try {
+            if (optionsBuilder != null) {
+                Log.d(TAG, "Initializing Firebase with custom options");
+                FirebaseApp.initializeApp(activity.getApplicationContext(), optionsBuilder.build());
+                optionsBuilder = null;
+            }
+            else if (FirebaseApp.getApps(activity.getApplicationContext()).size() == 0) {
+                // Try to load options from resources (google-services.xml)
+                Log.d(TAG, "Trying to load Firebase options from resources...");
+                FirebaseOptions options = FirebaseOptions.fromResource(activity.getApplicationContext());
+                if (options != null) {
+                    Log.d(TAG, "Firebase options loaded from resources: appId=" + options.getApplicationId() + ", projectId=" + options.getProjectId());
+                    FirebaseApp.initializeApp(activity.getApplicationContext(), options);
+                } else {
+                    Log.e(TAG, "FirebaseOptions.fromResource() returned null");
+                    sendErrorMessage("Firebase initialization failed: no options found in resources. Make sure google-services.xml is in bundle/android/res/values/ or use firebase.set_option() before initialize()");
+                    return;
+                }
+            } else {
+                Log.d(TAG, "Firebase already initialized");
+            }
+            
+            // Verify Firebase was actually initialized
+            if (FirebaseApp.getApps(activity.getApplicationContext()).size() == 0) {
+                sendErrorMessage("Firebase initialization failed: FirebaseApp was not created");
+                return;
+            }
+            
+            Log.d(TAG, "Firebase initialized successfully");
+            sendSimpleMessage(MSG_INITIALIZED);
+        } catch (Exception e) {
+            Log.e(TAG, "Firebase initialization exception: " + e.getMessage(), e);
+            sendErrorMessage("Firebase initialization failed: " + e.getMessage());
         }
-        else if (FirebaseApp.getApps(activity.getApplicationContext()).size() == 0) {
-            FirebaseApp.initializeApp(activity.getApplicationContext());
-        }
-        sendSimpleMessage(MSG_INITIALIZED);
     }
 
     public boolean setOption(String key, String value) {
