@@ -106,10 +106,12 @@ dmExtension::Result InitializeFirebaseExtension(dmExtension::Params* params) {
 }
 
 dmExtension::Result AppFinalizeFirebaseExtension(dmExtension::AppParams* params) {
+    dmLogInfo("AppFinalizeExtension");
     return dmExtension::RESULT_OK;
 }
 
 dmExtension::Result FinalizeFirebaseExtension(dmExtension::Params* params) {
+    dmLogInfo("FinalizeExtension");
     FinalizeCallback();
     return dmExtension::RESULT_OK;
 }

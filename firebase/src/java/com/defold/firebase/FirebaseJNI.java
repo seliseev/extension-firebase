@@ -37,12 +37,18 @@ public class FirebaseJNI {
 
     public void initialize() {
         try {
+            if (FirebaseApp.getApps(activity.getApplicationContext()).size() > 0) {
+                Log.d(TAG, "Firebase already initialized, skipping");
+                sendSimpleMessage(MSG_INITIALIZED);
+                return;
+            }
+            
             if (optionsBuilder != null) {
                 Log.d(TAG, "Initializing Firebase with custom options");
                 FirebaseApp.initializeApp(activity.getApplicationContext(), optionsBuilder.build());
                 optionsBuilder = null;
             }
-            else if (FirebaseApp.getApps(activity.getApplicationContext()).size() == 0) {
+            else {
                 // Try to load options from resources (google-services.xml)
                 Log.d(TAG, "Trying to load Firebase options from resources...");
                 FirebaseOptions options = FirebaseOptions.fromResource(activity.getApplicationContext());
@@ -54,8 +60,6 @@ public class FirebaseJNI {
                     sendErrorMessage("Firebase initialization failed: no options found in resources. Make sure google-services.xml is in bundle/android/res/values/ or use firebase.set_option() before initialize()");
                     return;
                 }
-            } else {
-                Log.d(TAG, "Firebase already initialized");
             }
             
             // Verify Firebase was actually initialized
