@@ -20,6 +20,7 @@ shared_state = 1
 
 [library]
 include_dirs = firebase
+defold_min_version = 1.13.0
 
 [ios]
 bundle_identifier = com.defold.firebase
@@ -31,7 +32,4 @@ minimum_sdk_version = 23
 
 [osx]
 bundle_identifier = com.defold.firebase
-
-[native_extension]
-app_manifest = /generated.appmanifest
 

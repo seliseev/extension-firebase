@@ -7,14 +7,14 @@
   members:
     - name: initialize
       type: function
-      desc: Initialise Firebase
+      desc: Initialize Firebase.
 
       parameters:
         - name: options
           optional: true
           type: table
-          desc: Optional table with initialisation parameters to use instead of those specified in google-services.xml/plist 
-                When passing this, disable creation of the default Firebase App by specifying firebase.no_auto_init in game.project
+          desc: Optional table with initialization parameters to use instead of those specified in google-services.xml/plist.
+                When passing this, disable creation of the default Firebase App by specifying firebase.no_auto_init in game.project.
                 Valid keys in the table are api_key, app_id, database_url, messaging_sender_id, project_id, storage_bucket. All values are strings.
 
 #*****************************************************************************************************
@@ -31,8 +31,9 @@
             to remove callback
       parameters:
         - name: callback
+          optional: true
           type: function
-          desc: Callback function that is executed on any event in the SDK.
+          desc: Callback function that is executed on any event in the SDK, or nil to remove the current callback.
 
           parameters:
             - name: self
@@ -52,11 +53,13 @@
               desc: A table holding the data
               fields:
                   - name: token
-                    type: number
+                    type: string
+                    optional: true
                     desc: for MSG_INSTALLATION_AUTH_TOKEN
 
                   - name: id
-                    type: number
+                    type: string
+                    optional: true
                     desc: for MSG_INSTALLATION_ID
 
                   - name: error
